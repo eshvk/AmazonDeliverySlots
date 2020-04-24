@@ -23,7 +23,7 @@ To get selenium use:
 pip install selenium
 
 To get chrome webdriver go to following webiste:
-https://chromedriver.chromium.org/ 
+https://chromedriver.chromium.org/
 
 
 ## Running the script
@@ -32,5 +32,9 @@ Run with:
 python3 get_time_slots.py
 
 The program will walk you through how to use it. The idea is you will navigate to the schedule delivery
-page and will leave the script running on that page. It will periodically refresh the page and send 
+page and will leave the script running on that page. It will periodically refresh the page and send
 you a text notification once a time slot is open!
+
+## Changes In Fork
+- Removed text as an user interface and replaced it with os.say.
+- Selenium browser will have to be stopped manually.

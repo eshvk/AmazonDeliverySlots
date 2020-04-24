@@ -1,7 +1,6 @@
 from selenium import webdriver
 import time
-import getpass
-from text import send_text
+import os
 
 def get_delivery_slots(browser):
     slots = browser.find_elements_by_class_name("ufss-date-select-toggle-text-availability")
@@ -37,6 +36,7 @@ def amazon_fresh(browser, phone_info):
     except Exception as e:
         browser.refresh()
         print("exception refreshing page")
+        os.system('say "Error in Amazon"')
         if len(phone_info) > 0:
             send_text(phone_info,
             "Encountered an error: refreshing browser. Please double check your computer!")
@@ -47,29 +47,7 @@ def navigate_to_sign_in(browser):
     browser.get("https://amazon.com")
     browser.find_element_by_id("nav-link-accountList").click()
 
-def get_phone_info():
-    email = input("Please enter your email address: ")
-    password = getpass.getpass(prompt="Please enter email password: ")
-    phone = input("Please enter phone number to recieve texts: ")
-    carrier = input("Which carrier do you have?\
-        \n1) AT&T\n2) Sprint\n3) T-Mobile\n4) Verizon\n5) Boost\n6) Cricket\
-        \n7) Metro PCS\n8) Tracfone\n9)U.S. Cellular\n10) Virgin Mobile\
-        \nPlease enter number: ")
-    print()
-
-    return email, password, phone, int(carrier) - 1
-
-
-response = input("Would you like to recieve text updates on delivery slot availability (y/n)? ")
-phone_info = ()
-if response == 'y':
-    response = 'n'
-    while response != 'y':
-        phone_info = get_phone_info()
-        send_text(phone_info, "test notification")
-        response = input("Did you recieve a text (y/n)? ")
-
-browser = webdriver.Chrome()
+browser = webdriver.Chrome('/Users/eshvk/Downloads/chromedriver')
 browser.implicitly_wait(60)
 
 navigate_to_sign_in(browser)
@@ -90,21 +68,23 @@ cart = input("Which cart did you select 1) Amazon fresh or 2) whole foods? ")
 
 print("Finding slots for you now!")
 
-if cart == "2":
-    delivery_slots = get_delivery_slots(browser)
-
-    while len(delivery_slots) == 0:
-        print("refreshing page! " + str(delivery_slots))
-        browser.refresh()
+while True:
+    if cart == "2":
         delivery_slots = get_delivery_slots(browser)
-        time.sleep(30)
-else :
-    while not amazon_fresh(browser, phone_info):
-        print("refreshing page!")
-        browser.refresh()
-        # time.sleep(30)
+
+        while len(delivery_slots) == 0:
+            print("refreshing page! " + str(delivery_slots))
+            browser.refresh()
+            delivery_slots = get_delivery_slots(browser)
+            time.sleep(30)
+    else :
+        while not amazon_fresh(browser, phone_info):
+            print("refreshing page!")
+            browser.refresh()
+            # time.sleep(30)
+            #
 
 
-print("Found time slots!")
-if len(phone_info) > 0:
-    send_text(phone_info, "Amazon delivery slot open! Go check your computer!")
+    print("Found time slots!")
+    os.system('say "Found time slots"')
+    time.sleep(180)
